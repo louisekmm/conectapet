@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head prefix="og: http://ogp.me/ns#">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="ConectaPet">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <!-- Android Theme -->
+    <meta name="theme-color" content="#e96304">
+    <!-- /Android Theme -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.conectapet.com/">
+    
+    <title>Conectapet: encontre o pet ideal para sua família e seu estilo de vida online | Conectapet</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/png" href="{% static 'conectapet/img/favicon_32.png' %}"/>    
+    <link rel="stylesheet" type="text/css" href="{% static 'conectapet/css/style.css' %}"/>
+    {% load static %}
+  </head>
+  <body>
+  {% block header %}
+      <nav class="navbar navbar-expand-lg fixed-top navbar-light" style="margin-bottom: 0px; background-color:white">
+        {% load static %}
+          <a class="navbar-brand" href="{% url 'index' %}" style="padding-right: 10px; opacity:100%"><img src="{% static 'conectapet/img/logo_ok.png' %}"></a>
+        {% load static %}
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span> <span style="color: #e96304;">MENU</span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item" style="padding-right: 10px; font-weight: 500;"><a class="nav-link" href="{% url 'pet_list' type='index' %}"><span style="padding:7px; border-bottom: 5px solid orange; margin right:10px;"> Encontre o pet ideal </span></a></li>
+            <li class="nav-item" style="padding-right: 10px;padding-left: 10px; font-weight: 500;"><a class="nav-link" href="#"><span class="menubase-link">Como funciona</span></a></li>
+            <li class="nav-item" style="padding-left: 10px; font-weight: 500;"><a class="nav-link" href="#"><span class="menubase-link">FAQ</span></a></li>
+          </ul>
+
+          <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+              <li class="nav-item menubase-link" style="padding-right: 10px;"><a class="nav-link" href="#"><span class="fas fa-user"></span> <span class="menubase-link">Meu Perfil</span></a></li>
+              <li class="nav-item" style="padding-right: 10px;"><a class="nav-link" href="{% url 'logged_out' %}"><span class="fas fa-sign-out-alt"></span> <span class=" menubase-link">Sair</span></a></li>
+              {% if user.role_ong %}
+                <li class="nav-item"><a class="nav-link" href="#"><span class="fas fa-home"></span> <span class="menubase-link">Minha ONG</span></a></li>
+              {% else %}
+                <li class="nav-item"><a class="nav-link" href="#"><span class="fas fa-paw"></span> <span class="menubase-link">Criar ONG</span></a></li>
+              {% endif %}
+            {% else %}
+              <li class="nav-item" style="padding-right: 10px;"><a class="nav-link" href="#"><span class="fas fa-user-plus"></span> <span class="menubase-link">Criar conta</span></a></li>
+              <li class="nav-item" style="padding-right: 10px;"><a class="nav-link" href="{% url 'login' %}"><span class="fas fa-sign-in-alt"></span> <span class="menubase-link">Entrar</span></a></li>
+              <li class="nav-item"><a class="nav-link" href="#"><span class="fas fa-paw"></span> <span class="menubase-link">ONGs</span></a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+
+    {% endblock %}      
+
+    {% block header_ong %}
+    {% if user.is_authenticated and user.role_ong %}
+           <nav class="nav nav-pills nav-justified bg-light"  style="padding:15px;">
+              <a class="nav-item nav-link" href="#">
+                <span class="fas fa-2x fa-home" style="color: darkorange"></span><br>
+                <span class="fs-subtitle">HOME</span>
+              </a>
+              <a class="nav-item nav-link" href="#">
+                <span class="fas fa-2x fa-paw" style="color: darkorange"></span><br>
+                <span class="fs-subtitle">PETS</span>
+              </a>
+              {% if user.permission_ong == 'Editar pets' or user.permission_ong == 'Editar equipe e pets' or user.permission_ong == 'Editar tudo' %}
+                <a class="nav-item nav-link" href="#">
+                  <span class="fas fa-2x fa-id-card-alt" style="color: darkorange;"></span><br>
+                  <span class="fs-subtitle">ADOÇÕES</span>
+                </a>
+                {% endif %}
+                {% if user.permission_ong != 'Visualizar pets'%}
+                <a class="nav-item nav-link" href="#">
+                  <span class="fas fa-2x fa-chart-bar" style="color: darkorange"></span><br>
+                  <span class="fs-subtitle">ESTATÍSTICAS</span></a>
+                {% endif %}
+                {% if user.permission_ong == 'Editar equipe e pets' or user.permission_ong == 'Editar tudo' %}
+                <a class="nav-item nav-link" href="#">
+                  <span><span class="fas fa-2x fa-chart-line" style="color: darkorange"></span><span class="fas fa-sm fa-lock" style="color: darkorange"></span></span><br>
+                  <span class="fs-subtitle">ESTATÍSTICAS +</span>
+                </a>
+                <a class="nav-item nav-link" href="#">
+                  <span class="fas fa-2x fa-file-invoice-dollar" style="color: darkorange"></span><br>
+                  <span class="fs-subtitle">FINANCEIRO</span>
+                </a>
+                {% endif %}
+                {% if user.permission_ong ==  'Editar equipe e pets' or user.permission_ong == 'Editar tudo' or user.permission_ong == 'Visualizar equipe e pets' %}
+                <a class="nav-item nav-link" href="#">
+                  <span class="fas fa-2x fa-user-cog" style="color: darkorange"></span><br>
+                  <span class="fs-subtitle">EQUIPE</span>
+                </a>
+              {% endif %}
+              {% if user.permission_ong == 'Editar tudo' %}
+                <a class="nav-item nav-link" href="#">
+                  <span class="fas fa-2x fa-edit" style="color: darkorange;"></span><br>
+                  <span class="fs-subtitle">DADOS ONG</span>
+                </a>
+              {% endif %}
+                <a class="nav-item nav-link" href="#">
+                <span class="fas fa-2x fa-info-circle" style="color: darkorange"></span><br>
+                <span class="fs-subtitle">DÚVIDAS</span>
+              </a>
+              
+            </nav>
+    {% endif %}
+    {% endblock header_ong %}
+
+  
+    {% block content %}  
+    {% endblock content %}
+    
+    
+   <div style="background-color: orange; margin:0; padding-bottom:0; color: white;">         
+         <div class="container"  style="margin-bottom:0px; padding-bottom:0px;">
+            <div class="row text-center">
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;">
+                   <h5 style="padding-bottom:15px; letter-spacing: 0.1em;"><label style="border-bottom: 1px solid white; padding-bottom:4px;">FALE CONOSCO</label></h5>
+                   <h6 style="padding-bottom: 25px">
+                      {% load static %}
+                        <img src="{% static 'conectapet/img/email.png' %}" class="img-fluid" style="max-width: 25px;" alt="E-mail">
+                      {% load static %}
+                      contato@conectapet.com
+                   </h6>
+                   <div>
+                       {% load static %}
+                        <img src="{% static 'conectapet/img/facebook.png' %}" class="img-fluid" style="max-width: 38px; margin-right: 20px;" alt="Facebook">
+                      {% load static %}
+                       {% load static %}
+                        <img src="{% static 'conectapet/img/instagram.png' %}" class="img-fluid" style="max-width: 40px;" alt="Instagram">
+                      {% load static %}
+                   </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding-top:20px; ">
+                        <h5 style="padding-bottom:15px; letter-spacing: 0.1em;"><label style="border-bottom: 1px solid white; padding-bottom:4px;">CONECTAPET</label></h5>
+                        <h6 style="padding-top: 25px">ola</h6>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding-top:20px; ">
+                        <h5 style="padding-bottom:15px; letter-spacing: 0.1em;"><label style="border-bottom: 1px solid white; padding-bottom:4px;">ONGS</label></h5>
+                        <h6 style="padding-top: 25px">oi</h6>
+                </div>
+            </div>
+            <div class="row text-center" style="padding-bottom:20px; padding-top:15px;">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <h6>Menção honrosa</h6>
+                   {% load static %}
+                    <img src="{% static 'conectapet/img/sw_pets.jpg' %}" class="img-fluid" style="max-width: 300px;" alt="Startup Weekends Pets">
+                  {% load static %}
+                </div>
+            </div>
+          </div>    
+        
+        </div> 
+    
+    
+    {% block javascript %}
+        <!-- jQuery library -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+      <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/shortcuts/infinite.min.js"></script>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script>
+      
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous">
+
+        
+      </script>
+
+
+    {% endblock %}
+  </body>
+</html>

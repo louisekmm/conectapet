@@ -1,0 +1,7 @@
+	{% for city in cities %}
+		{% if loaded_field == city.nome %}
+			<option value="{{ city.pk }}" selected>{{ city.nome }}</option>
+		{% else %}
+			<option value="{{ city.pk }}">{{ city.nome }}</option>
+	    {% endif %}
+    {% endfor %}

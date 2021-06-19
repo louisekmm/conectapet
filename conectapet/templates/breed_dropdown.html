@@ -1,0 +1,7 @@
+	  {% for breed in breeds %}
+		{% if loaded_field == breed.name %}
+			<option value="{{ breed.pk }}" selected>{{ breed.name }}</option>
+		{% else %}
+			<option value="{{ breed.pk }}">{{ breed.name }}</option>
+		{% endif %}
+	{% endfor %}

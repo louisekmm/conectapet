@@ -1,0 +1,423 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="bg-image bg-image-sedona d-flex align-items-center vh-80">
+        <div class="container">
+            <div class="container">
+                <div class="row"> 
+                    <div class="col-lg-2 col-md-2"></div>
+                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 align-middle text-center align-items-center rounded-top" style="border-bottom: 1px solid light gray; background: rgba(255,255,255,0.85); padding-bottom:25px; padding-top:20px;">
+                        <h4><label style="background-color: #FED8B1">aEncontre o pet ideal  para sua rotina e espaço!</label></h4>
+                    </div>
+                    <div class="col-lg-2 col-md-2"></div>
+                </div>
+
+                <form method="get" action="{% url 'pet_list' type='index' %}" id="IndexSearchForm" autocomplete="off" data-cities-url="{% url 'ajax_load_cities' %}" data-breed-url="{% url 'ajax_load_breeds' %}" >
+                          {% csrf_token %}
+                              
+                            <div class="row text-center"> 
+                             <div class="col-lg-2 col-md-2"></div>
+                             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12  align-middle text-center align-items-center" style="background: rgba(255,255,255,0.85);">
+                                    <select  id="city_options" style="width:100%; display:none;">
+                                    </select>
+                                  <div class="form-group" style="padding-left:40px; margin-top: 10px; margin-left: 10px;min-width: 290px; max-width: 290px;" >
+                                    <select id="city" style="width:100%" class="js-select2">
+            
+                                    </select>
+                                  </div>
+                               </div>
+                              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 align-middle text-center align-items-center" style="background: rgba(255,255,255,0.85); padding-bottom:15px;">
+                                  <div class="btn-group btn-group-toggle btn-group-justified btn-sm" data-toggle="buttons" style="background-color: white; padding:0;margin:0">
+                                      <label class="btn btn-outline-secondary button-gray" title="Cachorro">
+                                        <input type="checkbox" id="speciesdog_value" value="Cachorro"> 
+                                        <span class="fas fa-dog fa-2x"></span>
+                                      </label>
+                                      <label class="btn btn-outline-secondary button-gray" title="Gato">
+                                        <input type="checkbox"  id="speciescat_value" value="Gato"> 
+                                        <span class="fas fa-cat fa-2x"></span>
+                                      </label>
+                                  </div>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 align-middle text-center align-items-center" style="background: rgba(255,255,255,0.85);">
+                                  <div class="btn-group btn-group-toggle btn-group-justified btn-sm" data-toggle="buttons"  id="id_gender">
+                                      <label class="btn btn-outline-secondary button-orange" title="Fêmea">
+                                        <input type="checkbox" id="genderfem_value" value="Fêmea"> 
+                                        <span class="fas fa-venus fa-2x"></span>
+                                      </label>
+                                      <label class="btn btn-outline-secondary button-orange" title="Macho">
+                                        <input type="checkbox" id="gendermac_value" value="Macho"> 
+                                        <span class="fas fa-mars fa-2x"></span>
+                                      </label>
+                                  </div>
+                                </div>
+                              <div class="col-lg-2 col-md-2"></div>
+                            </div>
+                            <div class="row text-center"> 
+                               <div class="col-lg-2 col-md-2"></div>
+                               <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 align-middle rounded-bottom" style="background: rgba(255,255,255,0.85); padding-bottom:35px; padding-top:20px">
+                                   <button type="submit" class="btn btn-info" id="search_on">
+            				            <span class="fas fa-search" style="margin-right: 2px"></span>
+            				            <span> Pesquisar pelo seu pet ideal</span> 
+            				        </button> 
+                              </div>
+                              <div class="col-lg-2 col-md-2"></div>
+                            </div>
+                            
+                          </form> 
+                    </div>
+            </div>
+    </div>
+    
+    
+         <!-- Full Page Intro -->
+        <!-- Main navigation -->
+        <div style="background-color: white; margin:0">
+          <div class="container">
+            <div class="row py-5">
+              <div class="col-12 text-center">
+                <h3 class="headline-4" style="color: #e39727; letter-spacing: 0.1em; padding-bottom:10px;">O QUE É</h3>
+                <h4 style="padding-top:5px;">Somos a plataforma que vai revolucionar e facilitar as adoções de pets:</h4> <br>
+                <h4>Encontre o pet mais compatível com as suas necessidades e da sua família e adote totalmente online! </h4>
+              </div>
+            </div>
+          </div>
+   
+   
+   {% load static %}  
+        <div style="background-color: #FED8B1; margin:0; background-image: url({% static 'conectapet/img/bg_index.png' %});">         
+          {% load static %}
+         <div class="container"  style="margin-bottom:0px; padding-bottom:0px;">
+            <div class="row py-5">
+              <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center" style="margin-right:0; padding-right:0;">
+                  {% load static %}
+                    <img src="{% static 'conectapet/img/dog_cat.jpg' %}" class="img-fluid" style="max-width: 88%;" alt="Cachorro e gato amigos">
+                  {% load static %}
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center" style="background-color: #f8f8f8; margin-left:0; padding-left:0;">
+                    <div style="padding: 10px;">
+                        <h3 style="color: black; letter-spacing: 0.1em;">Mas é confiável mesmo?</h3>
+                        <br><h6 style="padding-top:5px; padding-left:15px; padding-right:15px;"><span style="color: #e39727;">SIM!</span> Esse tipo de sistema já existe há um bom tempo nos Estados Unidos e agora trouxemos essa tecnologia para os nossos pets brasileiros!</h6>
+                        <br><h6 style="padding-bottom:10px; padding-left:15px; padding-right:15px;">Por meio de uma busca eficiente, nosso sistema foi construído para permitir uma adoção online segura e mais certeira,  minimizando as taxas de retorno dos pets.</h6> 
+                    </div>
+              </div>
+            </div>
+          </div>    
+        
+        </div> 
+        
+        
+          <div class="container" style="margin-bottom:0px; padding-bottom:0px;"> 
+            <div class="row py-5">
+              <div class="col-12 text-center">    
+                <h2 class="headline-2" style="color: #e39727; letter-spacing: 0.2em;">COMO FUNCIONA</h2>
+                <div class="row py-5 text-center">
+                      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 feature-item rounded py-3"><div class="shadow" style="padding:25px;"> 
+                            {% load static %}
+                                <img src="{% static 'conectapet/img/how_works_1.jpg' %}" class="img-fluid rounded-circle" style="max-width: 80%;" alt="Cachorro e gato amigos">
+                            {% load static %}
+                            <br><br>
+                            <h5>Fique tranquilo</h5>
+                            <h6>Mapeamos traços comportamentais e físicos de cada pet, que são de diversas ONGs para uma adoção mais certeira e online.</h6>
+                      </div></div>
+                      <div class="col-lg-4 col md-4 col-sm-12 col-xs-12 feature-item rounded py-3"><div class="shadow" style="padding:25px;"> 
+                          {% load static %}
+                                <img src="{% static 'conectapet/img/how_works_2.jpg' %}" class="img-fluid rounded-circle" style="max-width: 80%;" alt="Cachorro e gato amigos">
+                            {% load static %}
+                            <br><br>
+                            <h5>Pesquise um pet</h5>
+                            <h6>Escolha qual pet você deseja adotar, então é só preencher um formulário e a ONG será alertada para analisar seu perfil.</h6>
+                      </div></div>
+                      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 feature-item rounded py-3"><div class="shadow" style="padding:25px;"> 
+                          {% load static %}
+                                <img src="{% static 'conectapet/img/how_works_3.jpg' %}" class="img-fluid rounded-circle" style="max-width: 80%;" alt="Cachorro e gato amigos">
+                            {% load static %}
+                            <br><br>
+                            <h5>Tenha um companheiro fiel</h5>
+                            <h6>Se o pet escolhido for um match ideal, você poderá conhecer o pet antes ou já adotar e ter um companheiro cheio de amor!</h6>
+                      </div></div>
+                </div> 
+              </div>
+            </div>
+          </div>
+        </div>
+    
+
+       
+
+{% block javascript %}
+    {{ block.super }} {# includes previous content in block #}
+{% endblock %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+<script>
+
+    $("#city").select2({
+        closeOnSelect: true,
+        placeholder : "Digite ou selecione sua CIDADE",
+        allowHtml: true,
+        allowClear: false,
+        tags: false, 
+     });
+     
+     $("#breed_value").select2({
+        closeOnSelect: true,
+        placeholder : "Digite ou selecione as RAÇAS",
+        allowHtml: true,
+        allowClear: false,
+        tags: false, 
+     });
+     
+  	function ajax_cidade() {
+        var url = $("#IndexSearchForm").attr("data-cities-url");  // get the url of the `load_cities` view
+
+        $.ajax({                       // initialize an AJAX request
+          url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+          data: {
+            'type': 'ongs',
+          },
+          success: function (data) {   // `data` is the return of the `load_cities` view function
+            $("#city_options").html(data);  // replace the contents of the city input with the data that came from the server
+            load_cidade();
+          }
+        });
+     };
+     
+
+    function load_cidade() {
+        var data;
+        var newOption;
+        var option_value;
+    
+        //clear cities
+        $('#city').empty().trigger("change");
+        //add cities
+        
+        data = {
+                id: 5270,
+                text: 'São Paulo'
+         };
+         newOption = new Option(data.text, data.id, false, false);
+         $('#city').append(newOption).trigger('change');
+         
+         data = {
+            id: '3658',
+            text: 'Rio de Janeiro'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '882',
+                text: 'Brasília'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '616',
+                text: 'Salvador'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '756',
+                text: 'Fortaleza'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '1630',
+                text: 'Belo Horizonte'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '256',
+                text: 'Manaus'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '2878',
+                text: 'Curitiba'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '3315',
+                text: 'Recife'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '977',
+                text: 'Goiânia'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '2436',
+                text: 'Belém'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '4174',
+                text: 'Porto Alegre'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '4920',
+                text: 'Guarulhos'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '4814',
+                text: 'Campinas'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '1314',
+                text: 'São Luís'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '147',
+                text: 'Maceió'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '1506',
+                text: 'Campo Grande'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '3770',
+                text: 'Natal'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '3582',
+                text: 'Teresina'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '2655',
+                text: 'João Pessoa'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '5353',
+                text: 'Aracaju'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '1383',
+                text: 'Cuiabá'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '4382',
+                text: 'Porto Velho'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '209',
+                text: 'Macapá'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '4400',
+                text: 'Boa Vista'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '1453',
+                text: 'Rio Branco'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '78',
+                text: 'Vitória'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '5514',
+                text: 'Palmas'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '4500',
+                text: 'Florianópolis'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+        // for (i = 1; i < 5565; i++) {
+        //    if((i != 5270) && (i != 3658) && (i != 882) && (i != 616) && (i != 756) && (i != 1630) && (i != 256) && (i != 2878) && (i != 3315) && (i != 977) && (i != 2436) && (i != 4174) && (i != 4920) && (i != 4814) && (i != 1314) && (i != 147) && (i != 1506) && (i != 3770) && (i != 3582) && (i != 2655) && (i != 5353) && (i != 1383) && (i != 4382) && (i != 209) && (i != 4400) && (i != 1453) && (i != 78) && (i != 5514) && (i != 4500)){
+        //        option_value = $("#city_options option[value='"+i+"']").text();
+        //        data = {
+        //            id: i,
+        //            text: option_value
+        //        };
+        //        newOption = new Option(data.text, data.id, false, false);
+        //        $('#city').append(newOption).trigger('change');
+        //    }
+        // }
+         
+        $('#city').val(null).trigger('change');
+    };
+ 
+    
+    $(document).ready(ajax_cidade);
+
+
+    
+    
+    
+</script>
+{% endblock %}

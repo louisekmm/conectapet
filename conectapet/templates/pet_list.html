@@ -1,0 +1,577 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+     function is_favorite(petId,type) {
+           var url = $("#favorite").attr("data-favorite-pet-url"); 
+           
+           $.ajax({                       // initialize an AJAX request
+             url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+             data: {
+               'pet_id': petId,       // add the country id to the GET parameters
+               'type': type,
+             },
+             success: function (data) {   // `data` is the return of the `load_cities` view function
+               $("#favorite_"+ petId).html(data);  // replace the contents of the city input with the data that came from the server
+             }
+           });
+     };
+
+</script>
+
+<nav class="navbar navbar-expand-sm bg-light navbar-light text-center" style="margin-bottom: 10px; margin-top: 10px;background:transparent;">
+    <div class="container-fluid text-center" style="margin-left: 0; padding-left: 0">
+        <form class="form-inline" method="post" id="orderPetForm" data-order-pets-url="{% url 'pet_list' type='show_order' %}">
+        {% csrf_token %}
+        <label style="background-color: #DCDCDC; padding:15px; border: 1px solid white;">
+                <select  id="city_options" style="width:100%; display:none;">
+                </select>
+                <div class="form-group text-left" style="margin-right: 15px; margin-top: 10px; min-width: 230px; max-width: 230px;">
+                    <select class="js-select2" id="city_value" style="width:100%;">
+                    </select>
+                </div>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-right: 10px;">
+                  <label class="btn btn-outline-secondary" style="margin-right: 2px;" title="Fêmea"><input type="checkbox" id="genderfem_value" value="Fêmea"><span class="fas fa-venus"></span></label>
+                  <label class="btn btn-outline-secondary" title="Macho"><input type="checkbox" id="gendermac_value" value="Macho"><span class="fas fa-mars"></span></label>
+                </div>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-right: 10px;">
+                  <label class="btn btn-outline-secondary" style="margin-right: 2px;" title="Cachorro"><input type="checkbox" id="speciesdog_value" value="Cachorro" onclick="what_species();"><span class="fas fa-dog"></span></label>
+                  <label class="btn btn-outline-secondary" title="Gato" onclick="what_species()"><input type="checkbox" id="speciescat_value" value="Gato"><span class="fas fa-cat"></span></label>
+                </div>
+            <select id="breed_options" style="width:100%; display: none;">
+            </select>
+            <div class="form-group" style="margin-top: 10px;margin-right: 10px; min-width: 200px; max-width: 200px;">
+                <select class="js-select2" multiple="multiple" id="breed_value" style="width:100%;">
+               </select>
+            </div>
+            <div class="form-group" style="margin-top: 10px;margin-right: 10px; min-width: 140px; max-width: 200px;">
+                <select class="js-select2" multiple="multiple" id="size_value" style="width:100%">
+                    <option value="all">Tanto faz</option>
+                    <option value="Mini">Mini</option>
+                    <option value="Pequeno">Pequeno</option>
+                    <option value="Médio">Médio</option>
+                    <option value="Grande">Grande</option>
+                    <option value="Gigante">Gigante</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-top: 10px; margin-right: 10px;min-width: 160px; max-width: 200px;">
+                <select class="js-select2" multiple="multiple" id="age_category_value" style="width:100%">
+                    <option value="all">Tanto faz</option>
+                    <option value="Filhote">Filhote</option>
+                    <option value="Adolescente">Adolescente</option>
+                    <option value="Adulto">Adulto</option>
+                    <option value="Maduro">Maduro</option>
+                    <option value="Idoso">Idoso</option>
+                </select>
+            </div>
+             <div class="form-group" style="margin-top: 10px; margin-right: 10px;min-width: 140px; max-width: 200px;">
+                <select class="js-select2" multiple="multiple" id="coat_size_value" style="width:100%">
+                    <option value="all">Tanto faz</option>
+                    <option value="Curto">Curto</option>
+                    <option value="Médio">Médio</option>
+                    <option value="Longo">Longo</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-top: 10px; min-width: 140px; max-width: 180px;">
+                <select class="js-select2" multiple="multiple" id="color_value" style="width:100%">
+                    <option value="all">Tanto faz</option>
+                    <option value="Amarelo">Amarelo</option>
+                    <option value="Branco">Branco</option>
+                    <option value="Cinza">Cinza</option>
+                    <option value="Creme">Creme</option>
+                    <option value="Laranja">Laranja</option>
+                    <option value="Marrom">Marrom</option>
+                    <option value="Preto">Preto</option> 
+                </select>
+            </div>
+        </label>
+        </form>
+    </div>
+</nav>
+
+<br><br>
+<div class="container" id="table_pets">
+     <div class="row infinite-container">
+          {% for pet in object_list %}
+               <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 infinite-item" style="margin-bottom: 15px; " id="favorite" data-favorite-pet-url="{% url 'ajax_favorite_status' %}">
+                    <div class="text-center" style="padding: 15px;border:1px solid gray; background-color: white; cursor: pointer;" onclick="alert('oi');">
+                         <img src="#" id="{{ pet.id }}"  onload="is_favorite('{{ pet.id }}','load')" class="img-responsive img-thumbnail" style="width: 200px; height:200px; object-fit: cover;">
+                         
+                         <h3 class="text-center" style="margin-bottom: 0;">
+                              <label style="cursor: pointer;">{{ pet.name|title }}
+                              {% if user.is_authenticated %} 
+                                   <a href="#" onclick="is_favorite('{{ pet.id }}','click')"><span id="favorite_{{pet.id}}"></span></a>
+                              {% else %} 
+                                   <a href="#"><label style='color: #e63e62;margin-right: 2px;' title='Faça login para favoritar esse pet'><span class="fas fa-heart" style="font-weight: 400;"></span></label></a>
+                              {% endif %}
+                              </label>
+                         </h3>
+                         <h5 style="font-weight: normal; margin-top: 0;">
+                            {{ pet.gender }}, {{ pet.age_category }}, {{ pet.size }}<br>
+                            {{ pet.primary_breed }}{% if pet.is_mixed_breed and pet.primary_breed != 'Sem Raça Definida'%} Mix {% endif %}
+                         </h5>
+                    </div>
+                  
+               </div>
+               {% empty %}
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+                         <div class="alert alert-warning" role="alert">
+                              Nenhum pet encontrado, tente fazer uma busca menos específica.
+                         </div>
+                    </div>
+          {% endfor %}
+     </div>
+
+    {% if page_obj.has_next %}
+     <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}"></a>
+
+     <div class="d-flex justify-content-center" style="display:none;">
+          <div class="spinner-border" role="status">
+               <span class="sr-only">Carregando...</span>
+          </div>
+     </div>
+{% endif %}
+</div> 
+       
+
+{% block javascript %}
+    {{ block.super }} {# includes previous content in block #}
+{% endblock %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+<script>
+    var infinite = new Waypoint.Infinite({
+        element: $('.infinite-container')[0],
+        handler: function(direction) {
+
+    },
+    offset: 'bottom-in-view',
+
+    onBeforePageLoad: function () {
+    $('.spinner-border').show();
+    },
+    onAfterPageLoad: function () {
+    $('.spinner-border').hide();
+    }
+
+    });  
+    
+    $("#coat_size_value").select2({
+        closeOnSelect: true,
+        placeholder : "Selecione PELAGEM",
+        allowHtml: true,
+        allowClear: true,
+        tags: false, 
+     });
+
+    $("#color_value").select2({
+        closeOnSelect: true,
+        placeholder : "Selecione COR",
+        allowHtml: true,
+        allowClear: true,
+        tags: false, 
+     });
+
+    $("#city_value").select2({
+        closeOnSelect: true,
+        placeholder : "Digite sua CIDADE",
+        allowHtml: true,
+        allowClear: true,
+        tags: false, 
+     });
+
+     $("#size_value").select2({
+        closeOnSelect: false,
+        placeholder : "Selecione PORTES",
+        allowHtml: true,
+        allowClear: true,
+        tags: false, 
+     });
+
+     $("#breed_value").select2({
+        closeOnSelect: false,
+        placeholder : "Digite ou selecione as RAÇAS",
+        allowHtml: true,
+        allowClear: true,
+        tags: false, 
+     });
+
+     $("#age_category_value").select2({
+        closeOnSelect: false,
+        placeholder : "Selecione IDADES",
+        allowHtml: true,
+        allowClear: true,
+        tags: false, 
+     });
+    
+    $("#color_value, #coat_size_value, #city_value, #size_value, #breed_value, #genderfem_value, #gendermac_value, #speciesdog_value, #speciescat_value").change(function () {
+      var url = $("#orderPetForm").attr("data-order-pets-url");  // get the url of the `load_cities` view
+      var coatValue = $("#coat_size_value").val().toString().replace(/,/, '0'); 
+      var colorValue = $("#color_value").val().toString().replace(/,/, '0');
+      var cityValue = $("#city_value").val();
+      var sizeValue = $("#size_value").val().toString().replace(/,/, '0');
+      var breedValue = $("#breed_value").val().toString().replace(/,/, 'a');;
+      var ageValue = $("#age_category_value").val().toString().replace(/,/, '0');
+      var genderfemValue = $("#genderfem_value").is(":checked").toString();
+      var gendermacValue = $("#gendermac_value").is(":checked").toString();
+      var speciesdogValue = $("#speciesdog_value").is(":checked").toString();
+      var speciescatValue = $("#speciescat_value").is(":checked").toString();
+
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'coat': coatValue,       // add the country id to the GET parameters
+          'color': colorValue,
+          'city': cityValue,
+          'size': sizeValue,
+          'age': ageValue,
+          'breed': breedValue,
+          'fem': genderfemValue,
+          'mac': gendermacValue,
+          'dog': speciesdogValue,
+          'cat': speciescatValue,
+        },
+        traditional: true,
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#table_pets").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+     });
+     
+     function all_species(){
+     data = {
+            id: 'all',
+            text: 'Tanto faz'
+      };
+      newOption = new Option(data.text, data.id, false, false);
+      $('#breed_value').append(newOption).trigger('change');
+     for (i = 1; i < 439 ; i++) {
+          if((i != 322) && (i != 349) && (i != 350)){
+             option_value = $("#breed_options option[value='"+i+"']").text();
+             data = {
+                 id: i,
+                 text: option_value
+             };
+             newOption = new Option(data.text, data.id, false, false);
+             $('#breed_value').append(newOption).trigger('change');
+          }
+      }
+    $('#breed_value').val(null).trigger('change');
+};
+
+function what_species(){
+    $('#speciesError').empty();
+    var data;
+    var newOption, newOption2;
+    var option_value;
+    var speciesdogValue = $("#speciesdog_value").is(":checked").toString();
+    var speciescatValue = $("#speciescat_value").is(":checked").toString();
+
+    //clear breeds
+    $('#breed_value').empty().trigger("change");
+    //add breed comon to both
+     data = {
+            id: 'all',
+            text: 'Tanto faz'
+      };
+      newOption = new Option(data.text, data.id, false, false);
+      $('#breed_value').append(newOption).trigger('change');
+    data = {
+            id: 322,
+            text: 'Sem Raça Definida (SRD)'
+     };
+     newOption = new Option(data.text, data.id, false, false);
+     $('#breed_value').append(newOption).trigger('change');
+    
+    //species particularities
+    //only cats
+    if ((speciesdogValue == 'false') && (speciescatValue == 'true')){
+
+      for (i = 351; i < 439; i++) {
+        option_value = $("#breed_options option[value='"+i+"']").text();
+        data = {
+            id: i,
+            text: option_value
+        };
+        newOption = new Option(data.text, data.id, false, false);
+        $('#breed_value').append(newOption).trigger('change');
+      }
+      //only dogs
+    }else if((speciesdogValue == 'true') && (speciescatValue == 'false')){
+      for (i = 1; i < 349; i++) {
+        if((i != 322) && (i != 349) && (i != 350)){
+          option_value = $("#breed_options option[value='"+i+"']").text();
+          data = {
+              id: i,
+              text: option_value
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          newOption2 = new Option(data.text, data.id, false, false);
+          $('#breed_value').append(newOption).trigger('change');
+        }
+      }
+    }
+    //all
+    else{
+     all_species();
+    }
+    $('#breed_value').val(null).trigger('change');
+};
+
+function ajax_cidade() {
+        var url = $("#IndexSearchForm").attr("data-cities-url");  // get the url of the `load_cities` view
+
+        $.ajax({                       // initialize an AJAX request
+          url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+          data: {
+            'type': 'ongs',
+          },
+          success: function (data) {   // `data` is the return of the `load_cities` view function
+            $("#city_options").html(data);  // replace the contents of the city input with the data that came from the server
+            load_cidade();
+          }
+        });
+     };
+     
+
+    function load_cidade() {
+        var data;
+        var newOption;
+        var option_value;
+    
+        //clear cities
+        $('#city').empty().trigger("change");
+        //add cities
+        
+        data = {
+                id: 5270,
+                text: 'São Paulo'
+         };
+         newOption = new Option(data.text, data.id, false, false);
+         $('#city').append(newOption).trigger('change');
+         
+         data = {
+            id: '3658',
+            text: 'Rio de Janeiro'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '882',
+                text: 'Brasília'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '616',
+                text: 'Salvador'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '756',
+                text: 'Fortaleza'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '1630',
+                text: 'Belo Horizonte'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '256',
+                text: 'Manaus'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '2878',
+                text: 'Curitiba'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '3315',
+                text: 'Recife'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '977',
+                text: 'Goiânia'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '2436',
+                text: 'Belém'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '4174',
+                text: 'Porto Alegre'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '4920',
+                text: 'Guarulhos'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '4814',
+                text: 'Campinas'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '1314',
+                text: 'São Luís'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '147',
+                text: 'Maceió'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '1506',
+                text: 'Campo Grande'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '3770',
+                text: 'Natal'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '3582',
+                text: 'Teresina'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '2655',
+                text: 'João Pessoa'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '5353',
+                text: 'Aracaju'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '1383',
+                text: 'Cuiabá'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '4382',
+                text: 'Porto Velho'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '209',
+                text: 'Macapá'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '4400',
+                text: 'Boa Vista'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '1453',
+                text: 'Rio Branco'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '78',
+                text: 'Vitória'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '5514',
+                text: 'Palmas'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+          data = {
+                id: '4500',
+                text: 'Florianópolis'
+          };
+          newOption = new Option(data.text, data.id, false, false);
+          $('#city').append(newOption).trigger('change');
+          
+         //for (i = 1; i < 5565; i++) {
+         //   if((i != 5270) && (i != 3658) && (i != 882) && (i != 616) && (i != 756) && (i != 1630) && (i != 256) && (i != 2878) && (i != 3315) && (i != 977) && (i != 2436) && (i != 4174) && (i != 4920) && (i != 4814) && (i != 1314) && (i != 147) && (i != 1506) && (i != 3770) && (i != 3582) && (i != 2655) && (i != 5353) && (i != 1383) && (i != 4382) && (i != 209) && (i != 4400) && (i != 1453) && (i != 78) && (i != 5514) && (i != 4500)){
+         //       option_value = $("#city_options option[value='"+i+"']").text();
+         //       data = {
+         //           id: i,
+         //           text: option_value
+         //       };
+         //       newOption = new Option(data.text, data.id, false, false);
+         //       $('#city').append(newOption).trigger('change');
+         //   }
+         //}
+         
+        $('#city').val(null).trigger('change');
+    };
+
+$(document).ready(function () {
+     all_species();
+     ajax_cidade();
+});
+
+
+
+
+</script>
+{% endblock %}

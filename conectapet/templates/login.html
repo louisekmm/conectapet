@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+ {% if not request.user.is_authenticated %}
+    {% if form.errors %}
+    <p>E-mail e senha não coincidem, tente novamente.</p>
+    {% endif %}
+
+    {% if next %}
+        {% if request.user.is_authenticated %}
+        <p>Sua conta não tem acesso a essa página.</p>
+        {% else %}
+        <p>Faça login para ver essa página.</p>
+        {% endif %}
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <table>
+    <tr>
+        <td>email</td>
+        <td>{{ form.username }}</td>
+    </tr>
+    <tr>
+        <td>{{ form.password.label_tag }}</td>
+        <td>{{ form.password }}</td>
+    </tr>
+    </table>
+
+    <input type="submit" value="login">
+    </form>
+
+    <p><a href="{% url 'password_reset' %}">Não sabe a senha?</a></p>
+{% else %}
+        <p>{{ user.first_name }}, você já está logado.</p>
+        <a href="{% url 'index' %}">Clique aqui e volte</a>
+{% endif %}
+
+{% endblock %}
